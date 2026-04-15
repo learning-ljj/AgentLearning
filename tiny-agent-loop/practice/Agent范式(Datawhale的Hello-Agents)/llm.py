@@ -8,7 +8,7 @@ from pydantic import Field, ValidationError, ConfigDict
 from pydantic_settings import BaseSettings  # 专门用于配置管理的基类
 
 # 加载 .env 文件（pydantic-settings 也能自动加载，但保留 dotenv 也无妨）
-load_dotenv()
+load_dotenv(dotenv_path=".env")
 
 # --- 1. 定义配置模型 ---
 class LLMSettings(BaseSettings):
@@ -24,8 +24,6 @@ class LLMSettings(BaseSettings):
     timeout: int = 60
 
     model_config = ConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
         case_sensitive=False,
         env_prefix="LLM_"   # 推荐使用统一前缀
     )
@@ -74,10 +72,11 @@ class HelloAgentsLLM:
             )
             
             print("✅ 大语言模型响应成功:")
+            # response 不是一次性完整文本，而是“很多小块数据”（chunk）按顺序到来。每个 chunk 里通常只包含一小段新文本。
             collected_content = []
             for chunk in response:
-                content = chunk.choices[0].delta.content or ""
-                print(content, end="", flush=True)
+                content = chunk.choices[0].delta.content or "" # 从当前 chunk 里取出新增文本内容。若取到的是空值（例如 None），就用空字符串 "" 代替。
+                print(content, end="", flush=True) # 把当前片段立即打印出来，不自动换行。立刻把缓冲区内容刷到屏幕，不等缓存。
                 collected_content.append(content)
             print()
             return "".join(collected_content)
