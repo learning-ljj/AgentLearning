@@ -1,0 +1,36 @@
+# .gitignore — practice folder
+# Protect local environment files and virtualenvs
+.venv/
+.env
+.env.*
+uv/
+venv/
+ENV/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Test / tooling
+.pytest_cache/
+.mypy_cache/
+coverage.xml
+.coverage
+htmlcov/
+
+# Logs and secrets
+*.log
+*.pem
